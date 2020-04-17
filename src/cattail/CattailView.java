@@ -14,7 +14,6 @@ public class CattailView extends JPanel {
     private JFrame frame;
     private JMenuBar menuBar;
     private JDialog jDialog;
-    private JFrame settingsFrame;
 
     public CattailView(CattailGame game, Minefield minefield) {
         this.game = game;
@@ -87,18 +86,28 @@ public class CattailView extends JPanel {
             repaint();
         });
 
-        JMenuItem settings = new JMenuItem("Настройки");
+        JMenu settings = new JMenu("Уровень сложности");
         settings.setFont(font);
         gameMenu.add(settings);
 
-        settings.addActionListener(e -> {
-            settingsFrame = new JFrame("Настройки");
-            settingsFrame.setLayout(new GridLayout(0, 1));
-            createMenuSettings();
-            settingsFrame.pack();
-            settingsFrame.setLocationRelativeTo(frame);
-            settingsFrame.setVisible(true);
-        });
+        JMenuItem easy = new JMenuItem("Простой 9х9");
+        easy.setFont(font);
+        easy.setActionCommand("easy");
+        easy.addActionListener(this::selectMode);
+
+        JMenuItem middle = new JMenuItem("Средний 16х16");
+        middle.setFont(font);
+        middle.setActionCommand("middle");
+        middle.addActionListener(this::selectMode);
+
+        JMenuItem expert = new JMenuItem("Эксперт 30х16");
+        expert.setFont(font);
+        expert.setActionCommand("expert");
+        expert.addActionListener(this::selectMode);
+
+        settings.add(easy);
+        settings.add(middle);
+        settings.add(expert);
 
         gameMenu.addSeparator();
 
@@ -127,24 +136,6 @@ public class CattailView extends JPanel {
         menuBar.add(gameMenu);
         menuBar.add(help);
 
-    }
-
-    private void createMenuSettings() {
-        JButton easy = new JButton("Простой 9х9");
-        easy.setActionCommand("easy");
-        easy.addActionListener(this::selectMode);
-
-        JButton middle = new JButton("Средний 16х16");
-        middle.setActionCommand("middle");
-        middle.addActionListener(this::selectMode);
-
-        JButton expert = new JButton("Эксперт 30х16");
-        expert.setActionCommand("expert");
-        expert.addActionListener(this::selectMode);
-
-        settingsFrame.add(easy);
-        settingsFrame.add(middle);
-        settingsFrame.add(expert);
     }
 
     private void createDialog() {
@@ -187,13 +178,14 @@ public class CattailView extends JPanel {
         minefield = game.getMinefield();
         repaint();
 
+        frame.remove(this);
         setPreferredSize(new Dimension(
                 minefield.getColumns() * ICON_SIZE,
                 minefield.getRows() * ICON_SIZE));
+        frame.add(this);
 
         frame.pack();
         frame.setLocationRelativeTo(null);
-        settingsFrame.setVisible(false);
     }
 
     private void createInfoDialog(ActionEvent e) {

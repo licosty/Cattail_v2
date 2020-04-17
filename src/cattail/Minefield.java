@@ -17,7 +17,7 @@ public class Minefield {
     private int tails;
 
     private int[] firstStep;
-    private int countFlags;
+    private int countCells;
     private boolean gameOver;
     private String message;
 
@@ -38,7 +38,7 @@ public class Minefield {
     public void startGame() {
         placeTails();
         placeUpperLayer();
-        countFlags = columns * rows;
+        countCells = columns * rows;
         gameOver = false;
         setFirstStep(-1, -1);
     }
@@ -116,7 +116,7 @@ public class Minefield {
                     case ZERO: openCellsAround(x, y); break;
                     case TAIL: openAllBombs(x, y); break;
                     default: upperLayer.setIconByCoords(x, y, Icon.OPENED);
-                        countFlagsDecrement();
+                        countCellsDecrement();
                 }
         }
     }
@@ -143,7 +143,7 @@ public class Minefield {
 
     private void openCellsAround(int x, int y) {
         upperLayer.setIconByCoords(x, y, Icon.OPENED);
-        countFlagsDecrement();
+        countCellsDecrement();
         for (int[] around : getCoordsAround(x, y)) {
             setOpened(around[0], around[1]);
         }
@@ -186,7 +186,7 @@ public class Minefield {
     }
 
     void isWin() {
-        if (countFlags == tails) {
+        if (countCells == tails) {
             gameOver = true;
             message = "Поздравляю! Все хвостики остались целы!";
         }
@@ -198,8 +198,8 @@ public class Minefield {
         return upperLayer.getIconByCoords(x, y);
     }
 
-    private void countFlagsDecrement() {
-        countFlags--;
+    private void countCellsDecrement() {
+        countCells--;
     }
 
     public int getColumns() {
@@ -212,5 +212,9 @@ public class Minefield {
 
     public String getMessage() {
         return message;
+    }
+
+    public Matrix getTailLayer() {
+        return tailLayer;
     }
 }
